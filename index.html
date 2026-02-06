@@ -489,12 +489,13 @@
         if (!res.ok) throw new Error("Failed to submit. Status: " + res.status);
 
         const out = await res.json().catch(() => ({}));
-        setStatus(out.message || "Submitted successfully!", "ok");
+if (out && out.ok === false) throw new Error(out.message || "Server error");
+setStatus(out.message || "Submitted successfully!", "ok");
         form.reset();
         window.scrollTo({ top: 0, behavior: "smooth" });
       } catch (err) {
         console.error(err);
-        setStatus("Submit failed. Check Web App URL / permissions.", "err");
+        setStatus("Submit failed: " + (err?.message || err), "err");
       } finally {
         submitBtn.disabled = false;
       }
