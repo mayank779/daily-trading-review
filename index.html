@@ -3,15 +3,16 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Trading Flow Journal</title>
+  <title>Daily Trading Review</title>
   <style>
     :root{
-      --bg:#e8edf4;
-      --node:#3d6fbe;
-      --node-dark:#335fa5;
-      --text:#ffffff;
-      --page:#1f2937;
-      --line:#2d5ca8;
+      --bg:#f3f5f9;
+      --card:#ffffff;
+      --text:#1f2937;
+      --muted:#6b7280;
+      --line:#d7deea;
+      --primary:#2563eb;
+      --primary-dark:#1e4fc1;
       --ok:#0a7f44;
       --err:#b42318;
     }
@@ -20,419 +21,336 @@
     body{
       margin:0;
       font-family:"Segoe UI",Tahoma,sans-serif;
-      background:linear-gradient(180deg,#f2f5fa 0%,#e7ecf4 100%);
-      color:var(--page);
+      background:var(--bg);
+      color:var(--text);
     }
 
-    .wrap{
-      max-width:1200px;
+    .container{
+      max-width:920px;
       margin:0 auto;
-      padding:18px 12px 38px;
+      padding:18px 14px 40px;
+    }
+
+    .card{
+      background:var(--card);
+      border:1px solid var(--line);
+      border-radius:14px;
+      padding:16px;
+      box-shadow:0 8px 22px rgba(22,34,57,.06);
     }
 
     h1{
-      margin:0 0 6px;
-      font-size:clamp(20px,2.4vw,32px);
-      text-align:center;
-      color:#20324f;
+      margin:0 0 4px;
+      font-size:clamp(22px,3vw,32px);
     }
 
     .sub{
-      margin:0 0 14px;
-      text-align:center;
-      color:#445874;
+      margin:0 0 16px;
+      color:var(--muted);
       font-size:14px;
     }
 
-    form{
-      background:rgba(255,255,255,.56);
-      border:1px solid rgba(45,92,168,.16);
-      border-radius:16px;
+    .section{
+      border:1px solid var(--line);
+      border-radius:12px;
       padding:12px;
+      margin-bottom:12px;
+      background:#fbfcff;
     }
 
-    .flow{
-      display:grid;
-      grid-template-columns:1fr;
-      gap:10px;
-      align-items:center;
-      justify-items:center;
-    }
-
-    .node{
-      width:min(100%,320px);
-      background:linear-gradient(180deg,var(--node),var(--node-dark));
-      color:var(--text);
-      border:1px solid rgba(255,255,255,.28);
-      box-shadow:0 8px 18px rgba(21,49,94,.24);
-      padding:12px;
-    }
-
-    .oval{border-radius:999px; min-height:116px;}
-    .circle{border-radius:999px; min-height:118px;}
-    .rect{border-radius:16px;}
-
-    .node h2{
-      margin:0 0 8px;
-      font-size:13px;
-      letter-spacing:.04em;
+    .section h2{
+      margin:0 0 10px;
+      font-size:14px;
       text-transform:uppercase;
-      color:#e7f0ff;
+      letter-spacing:.06em;
+      color:#344054;
     }
 
-    .node label{
+    .grid{
+      display:grid;
+      grid-template-columns:1fr;
+      gap:10px;
+    }
+
+    @media (min-width:680px){
+      .grid.two{grid-template-columns:1fr 1fr}
+      .grid.three{grid-template-columns:1fr 1fr 1fr}
+    }
+
+    label{
       display:block;
-      margin:6px 0 4px;
-      font-size:12px;
-      color:#edf4ff;
+      margin:0 0 6px;
+      font-size:13px;
+      color:#334155;
     }
 
-    .node input,
-    .node select,
-    .node textarea{
+    input, select, textarea{
       width:100%;
-      min-height:38px;
-      border:1px solid rgba(255,255,255,.52);
-      border-radius:9px;
-      padding:8px 10px;
-      font-size:14px;
-      color:#13233f;
-      background:#f4f8ff;
-    }
-
-    .node textarea{min-height:70px;resize:vertical}
-    .node input:focus,
-    .node select:focus,
-    .node textarea:focus{
-      outline:none;
-      border-color:#ffffff;
-      box-shadow:0 0 0 3px rgba(255,255,255,.25);
-    }
-
-    .arrow-down{
-      width:2px;
-      height:30px;
-      background:var(--line);
-      position:relative;
-    }
-    .arrow-down::after{
-      content:"";
-      position:absolute;
-      left:50%;
-      bottom:-6px;
-      transform:translateX(-50%);
-      border-left:7px solid transparent;
-      border-right:7px solid transparent;
-      border-top:10px solid var(--line);
-    }
-
-    .session-branch{
-      width:100%;
-      display:grid;
-      grid-template-columns:1fr;
-      gap:10px;
-      justify-items:center;
-    }
-
-    .branch-arrows{
-      width:min(100%,700px);
-      display:grid;
-      grid-template-columns:1fr 1fr 1fr;
-      align-items:center;
-      justify-items:center;
-      margin:-2px 0 2px;
-    }
-
-    .diag{
-      width:8px;
-      height:54px;
-      background:var(--line);
-      position:relative;
-      transform-origin:top center;
+      min-height:42px;
+      border:1px solid #c7d1e2;
       border-radius:10px;
-      box-shadow:0 1px 0 rgba(255,255,255,.18) inset;
+      padding:10px 12px;
+      font-size:15px;
+      background:#fff;
+      color:#111827;
     }
 
-    .diag::after{
-      content:"";
-      position:absolute;
-      left:50%;
-      bottom:-12px;
-      transform:translateX(-50%);
-      border-left:11px solid transparent;
-      border-right:11px solid transparent;
-      border-top:16px solid var(--line);
+    textarea{min-height:100px;resize:vertical}
+
+    input:focus, select:focus, textarea:focus{
+      outline:none;
+      border-color:var(--primary);
+      box-shadow:0 0 0 3px rgba(37,99,235,.12);
     }
 
-    .diag.left{transform:rotate(58deg)}
-    .diag.mid{transform:rotate(0deg)}
-    .diag.right{transform:rotate(-58deg)}
-
-    .session-links{
-      width:min(100%,520px);
-      text-align:center;
-      color:#355f9f;
-      font-weight:700;
-      letter-spacing:.08em;
-      font-size:14px;
-    }
-
-    .row-three,
-    .row-trade{
-      width:100%;
-      display:grid;
-      grid-template-columns:1fr;
-      gap:10px;
-      justify-items:center;
-      align-items:start;
-    }
-
-    .yn{
+    .chips{
       display:flex;
-      gap:8px;
+      gap:10px;
       flex-wrap:wrap;
       align-items:center;
-      margin-top:4px;
     }
 
-    .yn label{
-      margin:0;
+    .chip{
       display:inline-flex;
-      gap:6px;
+      gap:8px;
       align-items:center;
-      border:1px solid rgba(255,255,255,.5);
+      border:1px solid #c7d1e2;
       border-radius:999px;
-      min-height:34px;
-      padding:4px 10px;
-      background:rgba(255,255,255,.14);
+      min-height:38px;
+      padding:6px 12px;
       cursor:pointer;
+      background:#fff;
     }
 
-    .yn input{
+    .chip input{
       width:auto;
       min-height:auto;
       padding:0;
+      margin:0;
     }
 
     .actions{
-      margin-top:14px;
       display:flex;
-      gap:8px;
+      gap:10px;
       flex-wrap:wrap;
-      justify-content:center;
+      margin-top:4px;
     }
 
     button{
       min-height:42px;
-      border:0;
       border-radius:10px;
       padding:10px 16px;
-      cursor:pointer;
       font-weight:700;
-      font-size:14px;
+      font-size:15px;
+      cursor:pointer;
     }
 
-    .primary{background:#1d4fa5;color:#fff}
-    .ghost{background:#fff;color:#1f2937;border:1px solid #9db2d6}
-    button:disabled{opacity:.65;cursor:not-allowed}
+    .primary{
+      border:0;
+      background:var(--primary);
+      color:#fff;
+    }
+    .primary:hover{background:var(--primary-dark)}
+
+    .ghost{
+      border:1px solid #c7d1e2;
+      background:#fff;
+      color:#111827;
+    }
 
     .status{
-      margin-top:8px;
-      text-align:center;
+      margin-top:10px;
       font-size:13px;
-      color:#4b5f7d;
+      color:var(--muted);
     }
     .status.ok{color:var(--ok)}
     .status.err{color:var(--err)}
 
     .hidden{display:none}
-
-    @media (min-width:760px){
-      .row-three{grid-template-columns:repeat(3,minmax(180px,1fr));}
-      .row-trade{grid-template-columns:repeat(3,minmax(180px,1fr));}
-      .node{width:100%}
-      .branch-arrows{width:min(100%,760px);margin:0 0 4px}
-      .diag{height:58px}
-      .diag.left{transform:rotate(42deg)}
-      .diag.right{transform:rotate(-42deg)}
-      .trade-reasons{
-        width:100%;
-        display:grid;
-        grid-template-columns:1fr 1fr;
-        gap:10px;
-      }
-      .result-row{
-        width:100%;
-        display:grid;
-        grid-template-columns:1fr 1fr;
-        gap:10px;
-        align-items:start;
-      }
-    }
-
-    @media (min-width:1024px){
-      .branch-arrows{width:min(100%,860px);margin:2px 0 6px}
-      .diag{height:62px}
-      .diag.left{transform:rotate(30deg)}
-      .diag.right{transform:rotate(-30deg)}
-    }
   </style>
 </head>
 <body>
-  <div class="wrap">
-    <h1>Trading Flow Journal</h1>
-    <p class="sub">Flowchart-style layout, optimized for mobile and tablets.</p>
+  <div class="container">
+    <div class="card">
+      <h1>Daily Trading Review</h1>
+      <p class="sub">Simple form layout for mobile, tablet, and desktop.</p>
 
-    <form id="tradeForm" autocomplete="off">
-      <div class="flow">
-        <section class="node oval">
+      <form id="tradeForm" autocomplete="off">
+        <section class="section">
           <h2>Day and Date</h2>
-          <label for="date">Date</label>
-          <input id="date" name="Date" type="date" required />
-          <label for="day">Day</label>
-          <input id="day" name="Day" type="text" readonly />
-        </section>
-
-        <div class="arrow-down"></div>
-
-        <section class="node rect">
-          <h2>Opening / Closing / Sleep / Exercise / Medication</h2>
-          <label for="openingBalance">Opening Balance</label>
-          <input id="openingBalance" name="Opening Balance" type="number" step="0.01" required />
-          <label for="closingBalance">Closing Balance</label>
-          <input id="closingBalance" name="Closing Balance" type="number" step="0.01" required />
-          <label for="sleep">Sleep</label>
-          <input id="sleep" name="Sleep" type="text" required />
-          <label for="exercise">Exercise</label>
-          <select id="exercise" name="Exercise" required>
-            <option value="" selected disabled>Select</option>
-            <option>Yes</option>
-            <option>No</option>
-          </select>
-          <label for="medication">Medication</label>
-          <input id="medication" name="Medication" type="text" />
-        </section>
-
-        <div class="arrow-down"></div>
-
-        <div class="session-branch">
-          <div class="session-links">SESSION BRANCH: MORNING / NOON / EVENING</div>
-          <div class="branch-arrows" aria-hidden="true">
-            <div class="diag left"></div>
-            <div class="diag mid"></div>
-            <div class="diag right"></div>
-          </div>
-          <div class="row-three">
-            <section class="node rect">
-              <h2>Morning</h2>
-              <label for="sessionMorning">Choose Session</label>
-              <select id="sessionMorning" name="Session" required>
-                <option value="" selected disabled>Select session</option>
-                <option>Morning</option>
-                <option>Noon</option>
-                <option>Evening</option>
-              </select>
-            </section>
-
-            <section class="node rect">
-              <h2>Noon</h2>
-              <p style="margin:0;font-size:13px;color:#eef4ff;">Session option available in selector.</p>
-            </section>
-
-            <section class="node rect">
-              <h2>Evening</h2>
-              <p style="margin:0;font-size:13px;color:#eef4ff;">Session option available in selector.</p>
-            </section>
-          </div>
-        </div>
-
-        <div class="arrow-down"></div>
-
-        <section class="node circle hidden" id="morningBlock">
-          <h2>Mood 1-5 / Energy 1-5</h2>
-          <label for="mood">Mood (1-5)</label>
-          <input id="mood" name="Mood (1-5)" type="number" min="1" max="5" />
-          <label for="energy">Energy (1-5)</label>
-          <input id="energy" name="Energy (1-5)" type="number" min="1" max="5" />
-        </section>
-
-        <div class="arrow-down"></div>
-
-        <div class="row-trade">
-          <section class="node circle">
-            <h2>Trade No</h2>
-            <label for="tradeNo">Trade No</label>
-            <input id="tradeNo" name="Trade No" type="number" min="0" step="1" required />
-          </section>
-
-          <section class="node circle">
-            <h2>Script</h2>
-            <label for="script">Script</label>
-            <input id="script" name="Script" type="text" required />
-          </section>
-
-          <section class="node circle">
-            <h2>Reason for Entry</h2>
-            <label for="entryReason">Entry Reason</label>
-            <textarea id="entryReason" name="Reason for Entry" required></textarea>
-          </section>
-        </div>
-
-        <div class="arrow-down"></div>
-
-        <div class="result-row">
-          <section class="node circle">
-            <h2>Reason to Exit</h2>
-            <label for="exitReason">Exit Reason</label>
-            <textarea id="exitReason" name="Reason to Exit" required></textarea>
-          </section>
-
-          <section class="node oval">
-            <h2>Averaging / P/L / Notes</h2>
-            <label>Averaging (Y/N)</label>
-            <div class="yn">
-              <label><input type="radio" name="Averaging" value="Yes" required /> Yes</label>
-              <label><input type="radio" name="Averaging" value="No" required /> No</label>
+          <div class="grid two">
+            <div>
+              <label for="date">Date</label>
+              <input id="date" name="Date" type="date" required />
             </div>
-            <label for="pl">P/L</label>
-            <input id="pl" name="P/L" type="number" step="0.01" required />
-            <label for="notes">Notes</label>
-            <input id="notes" name="Notes" type="text" />
-          </section>
-        </div>
-
-        <div class="arrow-down"></div>
-
-        <section class="node circle">
-          <h2>Overtrading / Fixed Position Size</h2>
-          <label>Overtrading</label>
-          <div class="yn">
-            <label><input type="radio" name="Overtrading" value="Yes" required /> Yes</label>
-            <label><input type="radio" name="Overtrading" value="No" required /> No</label>
-          </div>
-          <label style="margin-top:8px;">Fixed Position Size</label>
-          <div class="yn">
-            <label><input type="radio" name="Fixed Position Size" value="Yes" required /> Yes</label>
-            <label><input type="radio" name="Fixed Position Size" value="No" required /> No</label>
+            <div>
+              <label for="day">Day</label>
+              <input id="day" name="Day" type="text" readonly />
+            </div>
           </div>
         </section>
-      </div>
 
-      <div class="actions">
-        <button class="primary" type="submit" id="submitBtn">Submit</button>
-        <button class="ghost" type="button" id="resetBtn">Reset</button>
-      </div>
-      <div id="status" class="status"></div>
-    </form>
+        <section class="section">
+          <h2>Setup</h2>
+          <div class="grid two">
+            <div>
+              <label for="openingBalance">Opening Balance</label>
+              <input id="openingBalance" name="Opening Balance" type="number" step="0.01" required />
+            </div>
+            <div>
+              <label for="closingBalance">Closing Balance</label>
+              <input id="closingBalance" name="Closing Balance" type="number" step="0.01" required />
+            </div>
+          </div>
+          <div class="grid two">
+            <div>
+              <label for="sleep">Sleep</label>
+              <input id="sleep" name="Sleep" type="text" required />
+            </div>
+            <div>
+              <label for="exercise">Exercise</label>
+              <select id="exercise" name="Exercise" required>
+                <option value="" selected disabled>Select</option>
+                <option>Yes</option>
+                <option>No</option>
+              </select>
+            </div>
+          </div>
+          <div>
+            <label for="medication">Medication</label>
+            <input id="medication" name="Medication" type="text" />
+          </div>
+        </section>
+
+        <section class="section">
+          <h2>Session</h2>
+          <div>
+            <label for="session">Choose Session</label>
+            <select id="session" name="Session" required>
+              <option value="" selected disabled>Select session</option>
+              <option>Morning</option>
+              <option>Noon</option>
+              <option>Evening</option>
+            </select>
+          </div>
+        </section>
+
+        <section class="section hidden" id="morningBlock">
+          <h2>Morning Check</h2>
+          <div class="grid two">
+            <div>
+              <label for="mood">Mood (1-5)</label>
+              <input id="mood" name="Mood (1-5)" type="number" min="1" max="5" />
+            </div>
+            <div>
+              <label for="energy">Energy (1-5)</label>
+              <input id="energy" name="Energy (1-5)" type="number" min="1" max="5" />
+            </div>
+          </div>
+        </section>
+
+        <section class="section">
+          <h2>Trade</h2>
+          <div class="grid two">
+            <div>
+              <label for="tradeNo">Trade No</label>
+              <input id="tradeNo" name="Trade No" type="number" min="0" step="1" required />
+            </div>
+            <div>
+              <label for="script">Script</label>
+              <input id="script" name="Script" type="text" required />
+            </div>
+          </div>
+          <div class="grid two">
+            <div>
+              <label for="entryReason">Reason for Entry</label>
+              <textarea id="entryReason" name="Reason for Entry" required></textarea>
+            </div>
+            <div>
+              <label for="exitReason">Reason to Exit</label>
+              <textarea id="exitReason" name="Reason to Exit" required></textarea>
+            </div>
+          </div>
+        </section>
+
+        <section class="section">
+          <h2>Result</h2>
+          <div>
+            <label>Averaging (Y/N)</label>
+            <div class="chips">
+              <label class="chip"><input type="radio" name="Averaging" value="Yes" required /> Yes</label>
+              <label class="chip"><input type="radio" name="Averaging" value="No" required /> No</label>
+            </div>
+          </div>
+          <div class="grid two">
+            <div>
+              <label for="pl">P/L</label>
+              <input id="pl" name="P/L" type="number" step="0.01" required />
+            </div>
+            <div>
+              <label for="notes">Notes</label>
+              <input id="notes" name="Notes" type="text" />
+            </div>
+          </div>
+        </section>
+
+        <section class="section">
+          <h2>Discipline</h2>
+          <div class="grid two">
+            <div>
+              <label>Overtrading</label>
+              <div class="chips">
+                <label class="chip"><input type="radio" name="Overtrading" value="Yes" required /> Yes</label>
+                <label class="chip"><input type="radio" name="Overtrading" value="No" required /> No</label>
+              </div>
+            </div>
+            <div>
+              <label>Fixed Position Size</label>
+              <div class="chips">
+                <label class="chip"><input type="radio" name="Fixed Position Size" value="Yes" required /> Yes</label>
+                <label class="chip"><input type="radio" name="Fixed Position Size" value="No" required /> No</label>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <div class="actions">
+          <button class="primary" type="submit" id="submitBtn">Submit</button>
+          <button class="ghost" type="button" id="resetBtn">Reset</button>
+        </div>
+        <div id="status" class="status"></div>
+      </form>
+    </div>
   </div>
 
   <script>
     const GOOGLE_SHEETS_WEBAPP_URL = "https://script.google.com/macros/s/AKfycbzS4mEZ0wD-2OEiUzUlryRpgBrCxjknioyrmIKVaWwz_3GbjXzBfhvldy-1f2MlXHHI/exec";
+    const FIELD_ORDER = [
+      "Date",
+      "Day",
+      "Opening Balance",
+      "Closing Balance",
+      "Sleep",
+      "Exercise",
+      "Medication",
+      "Session",
+      "Mood (1-5)",
+      "Energy (1-5)",
+      "Trade No",
+      "Script",
+      "Reason for Entry",
+      "Reason to Exit",
+      "Averaging",
+      "P/L",
+      "Notes",
+      "Overtrading",
+      "Fixed Position Size"
+    ];
 
     const form = document.getElementById("tradeForm");
     const dateEl = document.getElementById("date");
     const dayEl = document.getElementById("day");
-    const sessionEl = document.getElementById("sessionMorning");
+    const sessionEl = document.getElementById("session");
     const morningBlock = document.getElementById("morningBlock");
     const moodEl = document.getElementById("mood");
     const energyEl = document.getElementById("energy");
@@ -482,7 +400,11 @@
       updateDayFromDate();
       updateMorningBlock();
 
-      const payload = Object.fromEntries(new FormData(form).entries());
+      const fd = new FormData(form);
+      const payload = {};
+      FIELD_ORDER.forEach((key) => {
+        payload[key] = fd.get(key) ?? "";
+      });
       payload.ClientTimestamp = new Date().toISOString();
 
       try {
