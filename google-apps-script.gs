@@ -1,9 +1,12 @@
 const SHEET_NAME = "Form Data";
 const SPREADSHEET_ID = "1uq24US_wIAVSwyMy3SFi6tqaHFVls5C9qySgD4fogtE"; // Bound or standalone safe.
+const DEBUG_SHEET_NAME = "Debug Logs";
 
 function doPost(e) {
+  const receivedAt = new Date().toISOString();
   try {
-    const data = JSON.parse((e && e.postData && e.postData.contents) || "{}");
+    const raw = (e && e.postData && e.postData.contents) || "{}";
+    const data = JSON.parse(raw);
     const sheet = getSheet_();
 
     const headers = getHeaders_(data);
@@ -11,12 +14,16 @@ function doPost(e) {
 
     const row = headers.map((h) => data[h] ?? "");
     sheet.appendRow(row);
+    writeDebugLog_(receivedAt, "OK", "Saved to Google Sheet", raw);
 
     return jsonResponse_({ ok: true, message: "Saved to Google Sheet" });
   } catch (err) {
+    const msg = "Error: " + (err && err.message ? err.message : String(err));
+    const raw = (e && e.postData && e.postData.contents) || "";
+    writeDebugLog_(receivedAt, "ERROR", msg, raw);
     return jsonResponse_({
       ok: false,
-      message: "Error: " + (err && err.message ? err.message : String(err))
+      message: msg
     });
   }
 }
@@ -90,4 +97,16 @@ function jsonResponse_(obj) {
   return ContentService
     .createTextOutput(JSON.stringify(obj))
     .setMimeType(ContentService.MimeType.JSON);
+}
+
+function writeDebugLog_(ts, status, message, rawPayload) {
+  const ss = SpreadsheetApp.openById(SPREADSHEET_ID);
+  let sh = ss.getSheetByName(DEBUG_SHEET_NAME);
+  if (!sh) {
+    sh = ss.insertSheet(DEBUG_SHEET_NAME);
+    sh.getRange(1, 1, 1, 4).setValues([["Timestamp", "Status", "Message", "Payload"]]);
+    sh.setFrozenRows(1);
+  }
+
+  sh.appendRow([ts, status, message, String(rawPayload || "").slice(0, 50000)]);
 }
