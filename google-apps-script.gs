@@ -1,4 +1,5 @@
 const SHEET_NAME = "Form Data";
+const SPREADSHEET_ID = "1uq24US_wIAVSwyMy3SFi6tqaHFVls5C9qySgD4fogtE"; // Bound or standalone safe.
 
 function doPost(e) {
   try {
@@ -25,7 +26,17 @@ function doGet() {
 }
 
 function getSheet_() {
-  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  let ss = SpreadsheetApp.getActiveSpreadsheet();
+
+  // For standalone Apps Script projects, active spreadsheet can be null.
+  if (!ss && SPREADSHEET_ID) {
+    ss = SpreadsheetApp.openById(SPREADSHEET_ID);
+  }
+
+  if (!ss) {
+    throw new Error("Spreadsheet not found. Use Extensions > Apps Script from the sheet OR set SPREADSHEET_ID.");
+  }
+
   let sh = ss.getSheetByName(SHEET_NAME);
   if (!sh) sh = ss.insertSheet(SHEET_NAME);
   return sh;
